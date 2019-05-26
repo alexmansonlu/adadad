@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,7 +37,7 @@ public class bluetoothTest extends AppCompatActivity {
     private boolean isBtConnected = false;
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     ConnectBT connectBT;
-    boolean hasfUCKED = false;
+    static boolean hasfUCKED = false;
 
     private class ConnectBT extends AsyncTask<Void, Void, Void>  // UI thread
 
@@ -53,8 +54,7 @@ public class bluetoothTest extends AppCompatActivity {
         @Override
         public Void doInBackground(Void... devices) //while the progress dialog is shown, the connection is done in background
         {
-            TextView Bonny = (TextView) findViewById(R.id.ID);
-            Bonny.setText("hello");
+            Log.d("motherfucker", "bonny");
             try
             {
                 if (btSocket == null || !isBtConnected)
@@ -199,8 +199,9 @@ public class bluetoothTest extends AppCompatActivity {
                 Disconnect(); //close connection
             }
         });
-        if (hasfUCKED == true){
-        new ConnectBT().execute();}
+//        if (hasfUCKED == true){
+//        new ConnectBT().execute();
+//        }
 
         brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -247,11 +248,15 @@ public class bluetoothTest extends AppCompatActivity {
             String info = ((TextView) v).getText().toString();
             address = info.substring(info.length() - 17);
             // Make an intent to start next activity.
-            Intent i = new Intent(bluetoothTest.this,bluetoothTest.class);
+            //Intent i = new Intent(bluetoothTest.this,bluetoothTest.class);
             //Change the activity.
-            i.putExtra(EXTRA_ADDRESS, address);
+           // i.putExtra(EXTRA_ADDRESS, address);
             hasfUCKED=true;
-            startActivity(i);
+            Log.d( "hello", address);
+            //startActivity(i);
+            if (hasfUCKED == true){
+                new ConnectBT().execute();
+            }
         }
     };
 
