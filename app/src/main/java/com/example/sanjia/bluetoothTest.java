@@ -28,13 +28,15 @@ public class bluetoothTest extends AppCompatActivity {
 
     Button sig1, sig2, sig3;
     SeekBar brightness;
-    String address = null;
+    static String address = null;
     String EXTRA_ADDRESS = "device_address";
     private ProgressDialog progress;
     BluetoothAdapter myBluetooth = null;
     BluetoothSocket btSocket = null;
     private boolean isBtConnected = false;
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    ConnectBT connectBT;
+    boolean hasfUCKED = false;
 
     private class ConnectBT extends AsyncTask<Void, Void, Void>  // UI thread
 
@@ -49,8 +51,10 @@ public class bluetoothTest extends AppCompatActivity {
         }
 
         @Override
-        protected Void doInBackground(Void... devices) //while the progress dialog is shown, the connection is done in background
+        public Void doInBackground(Void... devices) //while the progress dialog is shown, the connection is done in background
         {
+            TextView Bonny = (TextView) findViewById(R.id.ID);
+            Bonny.setText("hello");
             try
             {
                 if (btSocket == null || !isBtConnected)
@@ -60,6 +64,7 @@ public class bluetoothTest extends AppCompatActivity {
                     btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
                     btSocket.connect();//start connection
+
                 }
             }
             catch (IOException e)
@@ -154,8 +159,8 @@ public class bluetoothTest extends AppCompatActivity {
         setContentView(R.layout.bluetooth_test);
         btnPaired = (Button)findViewById(R.id.pairdevices);
         devicelist = (ListView)findViewById(R.id.listview);
-        PlzConnectBT();
         myBluetooth = BluetoothAdapter.getDefaultAdapter();
+        PlzConnectBT();
         final Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -194,7 +199,8 @@ public class bluetoothTest extends AppCompatActivity {
                 Disconnect(); //close connection
             }
         });
-
+        if (hasfUCKED == true){
+        new ConnectBT().execute();}
 
         brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -239,11 +245,12 @@ public class bluetoothTest extends AppCompatActivity {
         {
             // Get the device MAC address, the last 17 chars in the View
             String info = ((TextView) v).getText().toString();
-            String address = info.substring(info.length() - 17);
+            address = info.substring(info.length() - 17);
             // Make an intent to start next activity.
             Intent i = new Intent(bluetoothTest.this,bluetoothTest.class);
             //Change the activity.
-            i.putExtra(EXTRA_ADDRESS, address); //this will be received at ledControl (class) Activity
+            i.putExtra(EXTRA_ADDRESS, address);
+            hasfUCKED=true;
             startActivity(i);
         }
     };
