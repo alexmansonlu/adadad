@@ -26,10 +26,10 @@ import java.util.UUID;
 
 public class bluetoothTest extends AppCompatActivity {
 
-    Button btnOn, btnOff, btnDis;
+    Button sig1, sig2, sig3;
     SeekBar brightness;
     String address = null;
-    String EXTRA_ADDRESS;
+    String EXTRA_ADDRESS = "device_address";
     private ProgressDialog progress;
     BluetoothAdapter myBluetooth = null;
     BluetoothSocket btSocket = null;
@@ -118,7 +118,7 @@ public class bluetoothTest extends AppCompatActivity {
         finish(); //return to the first layout
     }
 
-    private void turnOffLed()
+    private void sig2()
     {
         if (btSocket!=null)
         {
@@ -133,13 +133,13 @@ public class bluetoothTest extends AppCompatActivity {
         }
     }
 
-    private void turnOnLed()
+    private void sig1()
     {
         if (btSocket!=null)
         {
             try
             {
-                btSocket.getOutputStream().write("TO".toString().getBytes());
+                btSocket.getOutputStream().write("1".toString().getBytes());
             }
             catch (IOException e)
             {
@@ -152,7 +152,7 @@ public class bluetoothTest extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bluetooth_test);
-        btnPaired = (Button)findViewById(R.id.button);
+        btnPaired = (Button)findViewById(R.id.pairdevices);
         devicelist = (ListView)findViewById(R.id.listview);
         PlzConnectBT();
         myBluetooth = BluetoothAdapter.getDefaultAdapter();
@@ -165,28 +165,28 @@ public class bluetoothTest extends AppCompatActivity {
         Intent newint = getIntent();
         address = newint.getStringExtra(EXTRA_ADDRESS);
 //call the widgtes
-        btnOn = (Button)findViewById(R.id.signal1);
-        btnOff = (Button)findViewById(R.id.signal2);
-        btnDis = (Button)findViewById(R.id.signal3);
+        sig1 = (Button)findViewById(R.id.signal1);
+        sig2 = (Button)findViewById(R.id.signal2);
+        sig3 = (Button)findViewById(R.id.signal3);
         brightness = (SeekBar)findViewById(R.id.seekBar2);
-        btnOn.setOnClickListener(new View.OnClickListener()
+        sig1.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                turnOnLed();      //method to turn on
+                sig1();      //method to turn on
             }
         });
 
-        btnOff.setOnClickListener(new View.OnClickListener() {
+        sig2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                turnOffLed();   //method to turn off
+                sig2();   //method to turn off
             }
         });
 
-        btnDis.setOnClickListener(new View.OnClickListener()
+        sig3.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -194,6 +194,7 @@ public class bluetoothTest extends AppCompatActivity {
                 Disconnect(); //close connection
             }
         });
+
 
         brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -223,6 +224,12 @@ public class bluetoothTest extends AppCompatActivity {
 
             }
         });
+        btnPaired.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pairedDevicesList();
+            }
+        });
 
     }
 
@@ -246,7 +253,7 @@ public class bluetoothTest extends AppCompatActivity {
             //Show a message. that the device has no bluetooth adapter
             Toast.makeText(getApplicationContext(), "Bluetooth Device Not Available", Toast.LENGTH_LONG).show();
             //finish apk
-            finish();
+            //finish();
         } else {
             if (myBluetooth.isEnabled()) {
             } else {
