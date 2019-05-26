@@ -164,7 +164,7 @@ public class bluetoothTest extends AppCompatActivity {
         });
         Intent newint = getIntent();
         address = newint.getStringExtra(EXTRA_ADDRESS);
-//call the widgtes
+
         sig1 = (Button)findViewById(R.id.signal1);
         sig2 = (Button)findViewById(R.id.signal2);
         sig3 = (Button)findViewById(R.id.signal3);
