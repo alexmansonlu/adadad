@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -21,13 +22,15 @@ import android.widget.Toast;
 
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
 public class bluetoothTest extends AppCompatActivity {
 
-    Button sig1, sig2, sig3;
+    Button sig1, sig2, sig3,sig4,sig5;
     SeekBar brightness;
     static String address = null;
     String EXTRA_ADDRESS = "device_address";
@@ -35,8 +38,10 @@ public class bluetoothTest extends AppCompatActivity {
     BluetoothAdapter myBluetooth = null;
     BluetoothSocket btSocket = null;
     private boolean isBtConnected = false;
-    static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    ConnectBT connectBT;
+    static ParcelUuid[] myUUID;
+    String x;
+    InputStream inputstream=null;
+    //= UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     static boolean hasfUCKED = false;
 
     private class ConnectBT extends AsyncTask<Void, Void, Void>  // UI thread
@@ -61,11 +66,16 @@ public class bluetoothTest extends AppCompatActivity {
                 {
                     myBluetooth = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
                     BluetoothDevice dispositivo = myBluetooth.getRemoteDevice(address);//connects to the device's address and checks if it's available
-                    btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
+                    myUUID= dispositivo.getUuids();
+                    Log.d("dadad",myUUID[0].getUuid().toString() );
+                    btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID[0].getUuid());//create a RFCOMM (SPP) connection
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
                     btSocket.connect();//start connection
 
                 }
+
+
+
             }
             catch (IOException e)
             {
@@ -77,7 +87,14 @@ public class bluetoothTest extends AppCompatActivity {
         protected void onPostExecute(Void result) //after the doInBackground, it checks if everything went fine
         {
             super.onPostExecute(result);
-
+//            try {
+//                inputstream=btSocket.getInputStream();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            if(!(inputstream==null)){
+//            distance.setText("distance:"+inputstream.toString());}
+            Log.d("yeah we have set text", "onPostExecute: ");
             if (!ConnectSuccess)
             {
                 msg("Connection Failed. Is it a SPP Bluetooth? Try again.");
@@ -96,7 +113,7 @@ public class bluetoothTest extends AppCompatActivity {
     private Set pairedDevices;
     Button btnPaired;
     ListView devicelist;
-
+    TextView distance;
 
 
     public void toMain(View v){
@@ -115,12 +132,13 @@ public class bluetoothTest extends AppCompatActivity {
         {
             try
             {
-                btSocket.close(); //close connection
+                Log.d("Bonny2", "sig3: ");
+                btSocket.getOutputStream().write("I".toString().getBytes());
             }
             catch (IOException e)
             { msg("Error");}
         }
-        finish(); //return to the first layout
+
     }
 
     private void sig2()
@@ -129,7 +147,8 @@ public class bluetoothTest extends AppCompatActivity {
         {
             try
             {
-                btSocket.getOutputStream().write("TF".toString().getBytes());
+                Log.d("Bonny2", "sig2: ");
+                btSocket.getOutputStream().write("R".toString().getBytes());
             }
             catch (IOException e)
             {
@@ -138,13 +157,48 @@ public class bluetoothTest extends AppCompatActivity {
         }
     }
 
+    private void sig4()
+    {
+        if (btSocket!=null)
+        {
+            try
+            {
+                Log.d("Bonny2", "sig2: ");
+                btSocket.getOutputStream().write("J".toString().getBytes());
+            }
+            catch (IOException e)
+            {
+                msg("Error");
+            }
+        }
+    }
+    private void sig5()
+    {
+        if (btSocket!=null)
+        {
+            try
+            {
+                Log.d("Bonny2", "sig2: ");
+                btSocket.getOutputStream().write("C".toString().getBytes());
+            }
+            catch (IOException e)
+            {
+                msg("Error");
+            }
+        }
+    }
     private void sig1()
     {
         if (btSocket!=null)
         {
             try
             {
-                btSocket.getOutputStream().write("1".toString().getBytes());
+                if(btSocket.isConnected())
+                {
+                    Log.d("mama", "sig1: ");
+                }
+                Log.d("Bonny2", "sig1: ");
+                btSocket.getOutputStream().write("B".toString().getBytes());
             }
             catch (IOException e)
             {
@@ -170,10 +224,14 @@ public class bluetoothTest extends AppCompatActivity {
         Intent newint = getIntent();
         address = newint.getStringExtra(EXTRA_ADDRESS);
 
+        distance = (TextView) findViewById(R.id.ID);
         sig1 = (Button)findViewById(R.id.signal1);
         sig2 = (Button)findViewById(R.id.signal2);
         sig3 = (Button)findViewById(R.id.signal3);
+        sig4 = (Button)findViewById(R.id.signal4);
+        sig5 = (Button)findViewById(R.id.signal5);
         brightness = (SeekBar)findViewById(R.id.seekBar2);
+        brightness.setProgress(50);
         sig1.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -199,9 +257,25 @@ public class bluetoothTest extends AppCompatActivity {
                 Disconnect(); //close connection
             }
         });
-//        if (hasfUCKED == true){
-//        new ConnectBT().execute();
-//        }
+        sig4.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                sig4();      //method to turn on
+            }
+        });
+        sig5.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                sig5();      //method to turn on
+            }
+        });
+        if (hasfUCKED == true){
+        new ConnectBT().execute();
+        }
 
         brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -210,14 +284,7 @@ public class bluetoothTest extends AppCompatActivity {
                 {
                     TextView lumn = (TextView)findViewById(R.id.lumn);
                     lumn.setText(String.valueOf(progress));
-                    try
-                    {
-                        btSocket.getOutputStream().write(String.valueOf(progress).getBytes());
-                    }
-                    catch (IOException e)
-                    {
 
-                    }
                 }
             }
 
@@ -237,9 +304,31 @@ public class bluetoothTest extends AppCompatActivity {
                 pairedDevicesList();
             }
         });
-
+        Thread t= new Thread(){
+            @Override
+            public void run(){
+                try{
+                    Log.d("n", "run: ");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    if (!(btSocket==null)){
+                                     x =btSocket.getInputStream().toString();
+                                    distance.setText(x);}}
+                                catch (IOException e) {}
+                            }
+                        });
+                }
+                catch(InterruptedException e){}
+            }
+        };
+        t.start();
     }
 
+//    public void changedistance(){
+//
+//    }
     private AdapterView.OnItemClickListener myListClickListener = new AdapterView.OnItemClickListener()
     {
         public void onItemClick (AdapterView av, View v, int arg2, long arg3)
@@ -299,4 +388,35 @@ public class bluetoothTest extends AppCompatActivity {
 
     }
 
+}
+//
+class ConnectedThread extends Thread  {
+    bluetoothTest bt;
+    private final InputStream mmInStream;
+
+
+    public ConnectedThread(BluetoothSocket socket) {
+
+        socket = bt.btSocket;
+        InputStream tmpIn = null;
+
+        try {
+            tmpIn = socket.getInputStream();
+
+        } catch (IOException e) {
+        }
+        mmInStream = tmpIn;
+
+    }
+
+    public void run() {
+
+    }
+
+    public void cancel() {
+        try {
+            bt.btSocket.close();
+        } catch (IOException e) {
+        }
+    }
 }

@@ -8,7 +8,9 @@
     <string name="IM">I AM BACK</string>
     <string name="BT">To BlueTooth</string>
     <string name="PD">Pair Devices</string>
-    <string name="signal1">Signal 1</string>
-    <string name="signal2">Signal 2</string>
-    <string name="signal3">Signal 3</string>
+    <string name="signal1">Blue</string>
+    <string name="signal2">Red</string>
+    <string name="signal3">Wave</string>
+    <string name="signal4">Spark</string>
+    <string name="signal5">Grey</string>
 </resources>

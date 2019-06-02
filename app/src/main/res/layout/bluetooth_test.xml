@@ -101,8 +101,8 @@
             android:id="@+id/signal1"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
             android:background="@drawable/black"
             android:text="@string/signal1"
             android:textColor="#69F0AE" />
@@ -111,8 +111,8 @@
             android:id="@+id/signal2"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
             android:background="@drawable/black"
             android:text="@string/signal2"
             android:textColor="#69F0AE" />
@@ -121,11 +121,32 @@
             android:id="@+id/signal3"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
             android:background="@drawable/black"
             android:text="@string/signal3"
             android:textColor="#69F0AE" />
+
+        <Button
+            android:id="@+id/signal4"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/black"
+            android:text="@string/signal4"
+            android:textColor="#69F0AE" />
+
+        <Button
+            android:id="@+id/signal5"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/black"
+            android:text="@string/signal5"
+            android:textColor="#69F0AE" />
+
     </LinearLayout>
 
     <SeekBar
