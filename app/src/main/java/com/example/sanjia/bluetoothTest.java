@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.ParcelUuid;
@@ -69,7 +70,7 @@ public class bluetoothTest extends AppCompatActivity {
                     btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID[0].getUuid());//create a RFCOMM (SPP) connection
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
                     btSocket.connect();//start connection
-                    mConnectedThread=new ConnectedThread(btSocket);
+                    mConnectedThread = new ConnectedThread(btSocket);
                     mConnectedThread.start();
                 }
 
@@ -292,6 +293,7 @@ public class bluetoothTest extends AppCompatActivity {
 //        };
 //        t.start();
 
+
     private AdapterView.OnItemClickListener myListClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView av, View v, int arg2, long arg3) {
             // Get the device MAC address, the last 17 chars in the View
@@ -376,57 +378,73 @@ public class bluetoothTest extends AppCompatActivity {
     }
 
 
-    public void startThread() {
-        ConnectedThread ct = new ConnectedThread(btSocket);
-        new Thread(ct).start();
-    }
-}
-class ConnectedThread extends Thread  {
-    bluetoothTest bt;
-    private final InputStream mInStream;
-    private final OutputStream mOutStream;
+    class ConnectedThread extends Thread {
+        bluetoothTest bt;
+        private final InputStream mInStream;
+        private final OutputStream mOutStream;
+        BluetoothSocket mBluetoothsocket;
+        MediaPlayer mySong;
 
-
-    public ConnectedThread(BluetoothSocket socket) {
-        InputStream tmpIn = null;
-        OutputStream tmpOut = null;
-
-        // Get the input and output streams, using temp objects because
-        // member streams are final
-        try {
-            tmpIn = socket.getInputStream();
-            tmpOut = socket.getOutputStream();
-        } catch (IOException e) { }
-
-        mInStream = tmpIn;
-        mOutStream = tmpOut;
-    }
-
-    public void run() {
-
-        byte[] buffer = new byte[1024];
-        int bytes;
-
-        while (true){
+        public ConnectedThread(BluetoothSocket socket) {
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+            mBluetoothsocket = socket;
+            // Get the input and output streams, using temp objects because
+            // member streams are final
             try {
-                if (bt.btSocket==null){}
-                else{
-                    bytes = mInStream.read(buffer);
+                tmpIn = socket.getInputStream();
+                tmpOut = socket.getOutputStream();
+            } catch (IOException e) {
+            }
 
-                String inMessage = new String(buffer, 0, bytes);
-                Log.d("hello", "Incomming Message is: " + inMessage);}
+            mInStream = tmpIn;
+            mOutStream = tmpOut;
+        }
 
-            }catch (IOException e){
-                break;
+        public void run() {
+
+            byte[] buffer = new byte[1024];
+            int bytes;
+            int mamamia = 0;
+            // set up music
+            this.mySong = MediaPlayer.create(bluetoothTest.this, R.raw.aaa);
+            if (mySong != null) {
+                mySong.setLooping(true);
+            }
+            mySong.start();
+            while (true) {
+                try {
+                        bytes = mInStream.read(buffer);
+                        String inMessage = new String(buffer, 0, bytes);
+                        Log.d("hello", "Incomming Message is: " + inMessage);
+                        if (inMessage.equals("a"))// && (!mySong.isPlaying()) )
+                        {mySong.start();
+                        Log.d("hello", "run motherfuckers ");}
+                        if (inMessage.equals("b"))
+                        {mySong.pause();}
+                } catch (Exception e) {
+                    break;
+                }
             }
         }
 
-    }
+        public void cancel() {
+            try {
+                mBluetoothsocket.close();
+            } catch (IOException e) {
+            }
+        }
 
-    public void cancel() {
-        try {
-            bt.btSocket.close();
-        } catch (IOException e) {
+        public  String bytesToHexString(byte[] bytes) {
+            String result = "";
+            for (int i = 0; i < bytes.length; i++) {
+                String hexString = Integer.toHexString(bytes[i] & 0xFF);
+                if (hexString.length() == 1) {
+                    hexString = '0' + hexString;
+                }
+                result += hexString.toUpperCase();
+            }
+            return result;
         }
     }
 }
