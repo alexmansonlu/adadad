@@ -69,7 +69,8 @@ public class bluetoothTest extends AppCompatActivity {
                     btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID[0].getUuid());//create a RFCOMM (SPP) connection
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
                     btSocket.connect();//start connection
-
+                    mConnectedThread=new ConnectedThread(btSocket);
+                    mConnectedThread.start();
                 }
 
 
@@ -305,8 +306,7 @@ public class bluetoothTest extends AppCompatActivity {
             //startActivity(i);
             if (hasfUCKED == true) {
                 new ConnectBT().execute();
-                mConnectedThread = new ConnectedThread(btSocket);
-                mConnectedThread.start();
+
 //                final Thread thread = new Thread(new Runnable() {
 //                    @Override
 //                    public void run() {
