@@ -13,4 +13,6 @@
     <string name="signal3">Wave</string>
     <string name="signal4">Spark</string>
     <string name="signal5">Grey</string>
+    <string name="yutian">Rainy</string>
+    <string name="feng">Windy</string>
 </resources>

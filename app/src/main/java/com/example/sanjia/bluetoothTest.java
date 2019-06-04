@@ -32,7 +32,7 @@ import java.util.UUID;
 public class bluetoothTest extends AppCompatActivity {
 
     ConnectedThread mConnectedThread;
-    Button sig1, sig2, sig3, sig4, sig5;
+    Button sig1, sig2, sig3, sig4, sig5,feng,yu;
     SeekBar brightness;
     static String address = null;
     String EXTRA_ADDRESS = "device_address";
@@ -237,6 +237,7 @@ public class bluetoothTest extends AppCompatActivity {
                 sig5();      //method to turn on
             }
         });
+
 //        if (hasfUCKED == true) {
 //            new ConnectBT().execute();
 //        }
@@ -406,6 +407,20 @@ public class bluetoothTest extends AppCompatActivity {
             byte[] buffer = new byte[1024];
             int bytes;
             int mamamia = 0;
+            feng = (Button) findViewById(R.id.feng);
+            yu = (Button) findViewById(R.id.yu);
+            feng.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fenga();      //method to turn on
+                }
+            });
+            yu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    yua();      //method to turn on
+                }
+            });
             // set up music
             this.mySong = MediaPlayer.create(bluetoothTest.this, R.raw.aaa);
             if (mySong != null) {
@@ -445,6 +460,16 @@ public class bluetoothTest extends AppCompatActivity {
                 result += hexString.toUpperCase();
             }
             return result;
+        }
+        public void fenga(){
+            mySong.reset();
+            mySong=MediaPlayer.create(bluetoothTest.this, R.raw.wind);
+            mySong.start();
+        }
+        public void yua(){
+            mySong.reset();
+            mySong=MediaPlayer.create(bluetoothTest.this, R.raw.rain);
+            mySong.start();
         }
     }
 }
